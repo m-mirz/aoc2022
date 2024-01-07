@@ -22,21 +22,21 @@ func main() {
 
 	cals_sum := 0
 	for fileScanner.Scan() {
-		if fileScanner.Text() == "" {
+		if len(fileScanner.Text()) > 0 {
+			cals, err := strconv.Atoi(fileScanner.Text())
+			if err != nil {
+				fmt.Println("Error during conversion")
+				return
+			}
+			cals_sum += cals
+		} else {
 			// add elf
 			elves = append(elves, cals_sum)
 			cals_sum = 0
-			continue
 		}
-
-		cals, err := strconv.Atoi(fileScanner.Text())
-		if err != nil {
-			fmt.Println("Error during conversion")
-			return
-		}
-
-		cals_sum += cals
 	}
+	// add last elf
+	elves = append(elves, cals_sum)
 
 	readFile.Close()
 
@@ -52,10 +52,18 @@ func main() {
 
 	fmt.Println("Elf " + strconv.Itoa(max_elf_idx) + " has " + strconv.Itoa(max_elf) + " calories")
 
+	fmt.Printf("Elves:\n %v\n", elves)
+
 	sort.Slice(elves, func(i, j int) bool {
 		return elves[i] < elves[j]
 	})
 
-	fmt.Println(elves)
+	//fmt.Printf("Elves sorted:\n %v\n", elves)
 
+	sum := 0
+	for i := len(elves) - 1; i > len(elves)-4; i-- {
+		sum += elves[i]
+	}
+
+	fmt.Println("The three elves with most calories have " + strconv.Itoa(sum))
 }
